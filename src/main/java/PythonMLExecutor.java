@@ -9,8 +9,15 @@ public class PythonMLExecutor extends MLExecutor {
 	
 	private final String PYTHON_OUTPUT = "foofile.py";
 	
+	
+	
 	public PythonMLExecutor(ConfigurationML configuration) {
+		this (configuration, false);
+	}
+	
+	public PythonMLExecutor(ConfigurationML configuration, boolean withDocker) {
 		this.configuration = configuration;
+		this.withDocker = withDocker;
 	}
 
 	// TODO: refactoring of the code is needed since anti-pattern/bad smell https://fr.wikipedia.org/wiki/Code_smell#Long_Parameter_List
@@ -83,9 +90,19 @@ public class PythonMLExecutor extends MLExecutor {
 	}
 
 	public MLResult run() throws IOException {
+		
+		
+		Process p = null;
+		
+		String pwd = System.getProperty("user.dir");
+		if (withDocker()) {
+			p = Runtime.getRuntime().exec("docker run -v " + pwd + ":/app/" + " mml:latest python3 " + PYTHON_OUTPUT);			
+		}
+		else {
+			p = Runtime.getRuntime().exec("python3 " + PYTHON_OUTPUT);
+		}
 		// execute the generated Python code
 		// roughly: exec "python foofile.py"
-		Process p = Runtime.getRuntime().exec("python3 " + PYTHON_OUTPUT);
 	
 		// output
 		BufferedReader stdInput = new BufferedReader(new 

@@ -48,14 +48,16 @@ public class MMLPythonTest {
 	@Test
 	public void testR1() throws Exception {
 		ConfigurationML conf = new ConfigurationML("iris.csv", "variety");
-		MLExecutor ex = new RLanguageMLExecutor(conf);
+		MLExecutor ex = new RLanguageMLExecutor(conf, true);
 		ex.generateCode();
 		MLResult result = ex.run();	
 	
-		System.out.println(result.getStringResult());
-		
+		String strRes = result.getStringResult();
+		System.out.println(strRes);
+		String realResult = strRes.substring(strRes.indexOf("]") + 2);
+		System.err.println(realResult);
 		try {
-			Float.parseFloat(result.getStringResult());			
+			Float.parseFloat(realResult);			
 		}
 		catch (Exception e) {
 			fail("issue here!");

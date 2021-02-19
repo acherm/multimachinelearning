@@ -8,9 +8,16 @@ import com.google.common.io.Files;
 public class RLanguageMLExecutor extends MLExecutor {
 
 	private static final String R_OUTPUT = "foofile.R";
-		
+	
+	
+	
 	public RLanguageMLExecutor(ConfigurationML configuration) {
+		this (configuration, false);
+	}
+
+	public RLanguageMLExecutor(ConfigurationML configuration, boolean withDocker) {
 		this.configuration = configuration;
+		this.withDocker = withDocker;
 	}
 
 	public void generateCode() throws IOException {
@@ -47,10 +54,20 @@ public class RLanguageMLExecutor extends MLExecutor {
 	}
 
 	public MLResult run() throws IOException {
-		// execute the generated Python code
-		// roughly: exec "python foofile.py"
-		Process p = Runtime.getRuntime().exec("R -f " + R_OUTPUT);
-	
+		
+		Process p = null;
+		
+		String pwd = System.getProperty("user.dir");
+		if (withDocker()) {
+			p = Runtime.getRuntime().exec("docker run -v " + pwd + ":/app/" + " mml:latest R --slave -f " + R_OUTPUT);			
+		}
+		else {
+			// execute the generated R code
+			// roughly: exec "R -f foofile.py"
+			p = Runtime.getRuntime().exec("R --slave -f " + R_OUTPUT);
+		}
+			
+		
 		// output
 		BufferedReader stdInput = new BufferedReader(new 
 				InputStreamReader(p.getInputStream()));

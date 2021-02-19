@@ -5,8 +5,10 @@ import org.json.JSONObject;
 
 public class MMLMain {
 
+	
 
 	public static void main(String[] args) throws Exception {
+		
 		
 		// variation points
 		// dataset : not only iris.csv
@@ -42,6 +44,7 @@ public class MMLMain {
 		JSONObject obj = new JSONObject(str);
 		JSONObject d = (JSONObject) obj.get("dataset");
 		String f = d.getString("filename");
+		System.err.println("f" + f);
 		// String f = obj.getString("file_path"); // args[0]
 		String t = obj.getString("target_variable"); // args[1]
 		int training_size = obj.getInt("training"); // TODO
@@ -75,7 +78,7 @@ public class MMLMain {
 		
 		
 		ex.generateCode();
-		ex.run();	
+		System.out.println(ex.run().getStringResult());	
 		
 		
 		
