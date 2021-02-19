@@ -27,4 +27,6 @@ warning: on Windows system, the `python` command can well be `py`
 ### Docker 
 
 Docker files and images are provided to use MML. 
-
+see `mml-docker`
+`cd mml-docker; docker build -f Dockerfile -t mml .`
+then you got an `mml:latest` image that can be used to run specific scripts
