@@ -10,7 +10,26 @@ public class MMLPythonTest {
 	public void testPython1() throws Exception {
 		
 		ConfigurationML conf = new ConfigurationML("iris.csv", "variety");
-		MLExecutor ex = new PythonMLExecutor(conf);
+		MLExecutor ex = new PythonMLExecutor(conf, false);
+		ex.generateCode();
+		MLResult result = ex.run();	// instead of "void" we get an instance of MLResult
+		// TODO: check assertions over return value (eg it is indeed a float value)
+		
+		
+		try {
+			Float.parseFloat(result.getStringResult());
+		}
+		catch (Exception e) {
+			fail("not a float (accuracy)!");
+		}
+		
+	}
+	
+	@Test
+	public void testPython1WithDocker() throws Exception {
+		
+		ConfigurationML conf = new ConfigurationML("iris.csv", "variety");
+		MLExecutor ex = new PythonMLExecutor(conf, true);
 		ex.generateCode();
 		MLResult result = ex.run();	// instead of "void" we get an instance of MLResult
 		// TODO: check assertions over return value (eg it is indeed a float value)
@@ -45,25 +64,7 @@ public class MMLPythonTest {
 		
 	}
 	
-	@Test
-	public void testR1() throws Exception {
-		ConfigurationML conf = new ConfigurationML("iris.csv", "variety");
-		MLExecutor ex = new RLanguageMLExecutor(conf, true);
-		ex.generateCode();
-		MLResult result = ex.run();	
 	
-		String strRes = result.getStringResult();
-		System.out.println(strRes);
-		String realResult = strRes.substring(strRes.indexOf("]") + 2);
-		System.err.println(realResult);
-		try {
-			Float.parseFloat(realResult);			
-		}
-		catch (Exception e) {
-			fail("issue here!");
-		}
-		
-	}
 	
 	
 
